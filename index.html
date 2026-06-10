@@ -596,39 +596,55 @@ document.getElementById('cotizacion-form').addEventListener('submit', function(e
 });
 
 function enviarFormulario(datos) {
-  // Construir resumen para WhatsApp (fallback siempre disponible)
-  var resumen = '🛡️ *Nueva cotización — V%26B Insurance Broker*\n\n'
-    + '👤 *Nombre:* ' + datos.nombre + '\n'
-    + '📅 *Nacimiento:* ' + datos.nacimiento + '\n'
-    + '🪪 *DNI:* ' + datos.dni + '\n'
-    + '📍 *Dirección:* ' + datos.direccion + '\n'
-    + '📞 *Teléfono:* ' + datos.telefono + '\n'
-    + '📧 *Mail:* ' + datos.email + '\n\n'
-    + '🚗 *Auto:* ' + datos.auto + ' (' + datos.anio + ')\n'
-    + '🛡️ *Cobertura actual:* ' + datos.cobertura + '\n'
-    + '🔧 *Franquicia:* ' + datos.franquicia + '\n'
-    + '💰 *Costo actual:* ' + datos.costo + '\n'
+  var resumen = '🛡️ *Nueva cotización — V&B Insurance Broker*
+
+'
+    + '👤 *Nombre:* ' + datos.nombre + '
+'
+    + '📅 *Nacimiento:* ' + datos.nacimiento + '
+'
+    + '🪪 *DNI:* ' + datos.dni + '
+'
+    + '📍 *Dirección:* ' + datos.direccion + '
+'
+    + '📞 *Teléfono:* ' + datos.telefono + '
+'
+    + '📧 *Mail:* ' + datos.email + '
+
+'
+    + '🚗 *Auto:* ' + datos.auto + ' (' + datos.anio + ')
+'
+    + '🛡️ *Cobertura actual:* ' + datos.cobertura + '
+'
+    + '🔧 *Franquicia:* ' + datos.franquicia + '
+'
+    + '💰 *Costo actual:* ' + datos.costo + '
+'
     + '🏢 *Aseguradora:* ' + datos.aseguradora;
 
-  // Intentar EmailJS
-  if (typeof emailjs !== 'undefined' && window.VB_SERVICE_ID) {
-    emailjs.send(window.VB_SERVICE_ID, window.VB_TEMPLATE_ID, {
-      to_email: CONFIG_EMAIL || 'info@achegroup.com.ar',
-      nombre: datos.nombre,
-      nacimiento: datos.nacimiento,
-      dni: datos.dni,
-      direccion: datos.direccion,
-      telefono: datos.telefono,
-      auto: datos.auto + ' ' + datos.anio,
-      cobertura: datos.cobertura,
-      costo: datos.costo,
-      aseguradora: datos.aseguradora,
-    }).then(function() { mostrarExito(datos, resumen); })
-      .catch(function() { mostrarExito(datos, resumen); });
-  } else {
-    // Sin EmailJS: mostrar éxito igual y proveer link de WhatsApp con datos
+  var formData = new FormData();
+  formData.append('Nombre y Apellido', datos.nombre);
+  formData.append('Fecha de Nacimiento', datos.nacimiento);
+  formData.append('DNI', datos.dni);
+  formData.append('Direccion', datos.direccion);
+  formData.append('Telefono', datos.telefono);
+  formData.append('Email', datos.email);
+  formData.append('Auto', datos.auto + ' ' + datos.anio);
+  formData.append('Cobertura actual', datos.cobertura);
+  formData.append('Franquicia', datos.franquicia);
+  formData.append('Costo mensual actual', datos.costo);
+  formData.append('Aseguradora', datos.aseguradora);
+  formData.append('_subject', 'Nueva cotizacion - ' + datos.nombre + ' | V&B Insurance Broker');
+
+  fetch('https://formspree.io/f/xwvjqlpb', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  }).then(function() {
     mostrarExito(datos, resumen);
-  }
+  }).catch(function() {
+    mostrarExito(datos, resumen);
+  });
 }
 
 function mostrarExito(datos, resumen) {
