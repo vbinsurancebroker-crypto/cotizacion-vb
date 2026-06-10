@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotizá tu seguro de auto — V&B Insurance Broker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --azul: #1a2e4a;
+    --azul-mid: #243d61;
+    --dorado: #c9a84c;
+    --dorado-light: #e8c96a;
+    --blanco: #ffffff;
+    --gris-bg: #f7f8fa;
+    --gris-borde: #dde2ea;
+    --gris-texto: #556070;
+    --rojo: #c0392b;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gris-bg);
+    color: var(--azul);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--azul);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: '';
+    display: block;
+    height: 4px;
+    background: linear-gradient(90deg, var(--dorado), var(--dorado-light), var(--dorado));
+  }
+  .header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 24px 32px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .brand-icon {
+    width: 42px; height: 42px;
+    background: var(--dorado);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--blanco);
+    line-height: 1.2;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: var(--dorado);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .hero-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--dorado);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--blanco);
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  .hero-title span { color: var(--dorado); }
+  .hero-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,.7);
+    line-height: 1.65;
+    max-width: 480px;
+  }
+  .pill-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .pill {
+    font-size: 12px; font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(201,168,76,.4);
+    color: var(--dorado);
+    background: rgba(201,168,76,.08);
+  }
+
+  /* FORM */
+  .form-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dorado);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin: 32px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gris-borde);
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .field-grid .full { grid-column: 1 / -1; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--azul);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  label .req { color: var(--dorado); font-size: 14px; line-height: 1; }
+  label .opt { font-size: 11px; color: var(--gris-texto); font-weight: 400; margin-left: 2px; }
+
+  input, select {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--azul);
+    background: var(--blanco);
+    border: 1.5px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 10px 14px;
+    width: 100%;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 3px rgba(201,168,76,.12);
+  }
+  input.error, select.error {
+    border-color: var(--rojo);
+    box-shadow: 0 0 0 3px rgba(192,57,43,.1);
+  }
+  .error-msg {
+    font-size: 11px;
+    color: var(--rojo);
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a2e4a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  .submit-area { margin-top: 32px; }
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--azul);
+    color: var(--dorado);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: background .2s, transform .1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .submit-btn:hover { background: var(--azul-mid); }
+  .submit-btn:active { transform: scale(.99); }
+  .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+  .privacy {
+    font-size: 11px;
+    color: var(--gris-texto);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.55;
+  }
+
+  /* SUCCESS */
+  #success {
+    display: none;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--azul), var(--azul-mid));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(26,46,74,.2);
+  }
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--azul);
+    margin-bottom: 12px;
+  }
+  .success-desc {
+    font-size: 14px;
+    color: var(--gris-texto);
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto 28px;
+  }
+  .success-data {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  .success-data-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dorado);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gris-bg);
+    font-size: 13px;
+    gap: 12px;
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-label { color: var(--gris-texto); flex-shrink: 0; }
+  .data-val { color: var(--azul); font-weight: 500; text-align: right; }
+
+  /* CONFIG PANEL */
+  .config-panel {
+    background: #fffbf0;
+    border: 1.5px dashed var(--dorado);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .config-panel summary {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--azul);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .config-panel summary::after { content: '▾'; color: var(--dorado); }
+  .config-panel[open] summary::after { content: '▴'; }
+  .config-input-row {
+    display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap;
+  }
+  .config-input-row input {
+    flex: 1; min-width: 200px;
+    font-size: 13px; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid var(--gris-borde);
+  }
+  .config-save-btn {
+    padding: 8px 16px; border-radius: 8px; border: none;
+    background: var(--azul); color: var(--dorado);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  .config-note {
+    font-size: 11px; color: var(--gris-texto);
+    margin-top: 8px; line-height: 1.5;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--azul);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  footer::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--dorado), var(--dorado-light), var(--dorado));
+    margin-bottom: 20px;
+  }
+  footer p { font-size: 12px; color: rgba(255,255,255,.5); }
+  footer strong { color: var(--dorado); }
+
+  @media (max-width: 540px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .field-grid .full { grid-column: 1; }
+    .hero-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-name">V&B Insurance Broker</div>
+        <div class="brand-sub">Seguros a tu medida</div>
+      </div>
+    </div>
+    <div class="hero-label">Programa de beneficios para empleados</div>
+    <h1 class="hero-title">Cotizá tu seguro de auto<br>con <span>hasta 30% de descuento</span></h1>
+    <p class="hero-desc">Completá el formulario y te enviamos tu cotización personalizada en menos de 24 horas hábiles. Sin compromiso.</p>
+    <div class="pill-row">
+      <span class="pill">✓ Sin costo para vos</span>
+      <span class="pill">✓ Respuesta en 24 hs</span>
+      <span class="pill">✓ Sin compromiso</span>
+    </div>
+  </div>
+</header>
+
+<div class="form-wrap">
+
+  <!-- CONFIG PANEL (solo visible para el productor) -->
+  <details class="config-panel" id="config-panel">
+    <summary>⚙️ Configuración del formulario (solo vos ves esto)</summary>
+    <div class="config-input-row">
+      <input type="email" id="config-email" placeholder="Tu email donde recibir los leads (ej: info@achegroup.com.ar)" />
+      <button class="config-save-btn" onclick="saveConfig()">Guardar</button>
+    </div>
+    <p class="config-note">⚠️ Importante: ingresá tu email y hacé clic en "Guardar" antes de compartir este formulario. Los datos de cada prospecto se enviarán a esa dirección usando EmailJS (gratis hasta 200 mails/mes). Instrucciones completas debajo del formulario.</p>
+    <div id="emailjs-instructions" style="margin-top:12px;font-size:12px;color:#556070;line-height:1.7;">
+      <strong style="color:#1a2e4a;">Para activar el envío de mails:</strong><br>
+      1. Crear cuenta gratis en <a href="https://emailjs.com" target="_blank" style="color:#c9a84c;">emailjs.com</a><br>
+      2. Crear un "Email Service" conectando tu Gmail<br>
+      3. Crear un "Email Template" con las variables del formulario<br>
+      4. Reemplazar en el código: <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px;">TU_SERVICE_ID</code>, <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px;">TU_TEMPLATE_ID</code> y <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px;">TU_PUBLIC_KEY</code><br>
+      <em>Alternativa más simple: usar <a href="https://formspree.io" target="_blank" style="color:#c9a84c;">formspree.io</a> (gratis hasta 50 envíos/mes) — solo reemplazás el action del form.</em>
+    </div>
+  </details>
+
+  <form id="cotizacion-form" novalidate>
+
+    <div class="section-title">Datos personales</div>
+
+    <div class="field-grid">
+      <div class="field full">
+        <label for="nombre">Nombre y Apellido <span class="req">*</span></label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej: María González" autocomplete="name" />
+        <span class="error-msg" id="err-nombre">Ingresá tu nombre completo</span>
+      </div>
+
+      <div class="field">
+        <label for="nacimiento">Fecha de Nacimiento <span class="req">*</span></label>
+        <input type="date" id="nacimiento" name="nacimiento" max="2006-01-01" />
+        <span class="error-msg" id="err-nacimiento">Ingresá tu fecha de nacimiento</span>
+      </div>
+
+      <div class="field">
+        <label for="dni">DNI <span class="req">*</span></label>
+        <input type="text" id="dni" name="dni" placeholder="Ej: 32456789" maxlength="8" inputmode="numeric" />
+        <span class="error-msg" id="err-dni">Ingresá un DNI válido</span>
+      </div>
+
+      <div class="field full">
+        <label for="direccion">Dirección <span class="req">*</span></label>
+        <input type="text" id="direccion" name="direccion" placeholder="Calle, número, localidad" autocomplete="street-address" />
+        <span class="error-msg" id="err-direccion">Ingresá tu dirección</span>
+      </div>
+
+      <div class="field full">
+        <label for="telefono">Teléfono de contacto <span class="req">*</span></label>
+        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 11 5678-9012" inputmode="tel" autocomplete="tel" />
+        <span class="error-msg" id="err-telefono">Ingresá tu teléfono</span>
+      </div>
+    </div>
+
+    <div class="section-title">Datos del vehículo</div>
+
+    <div class="field-grid">
+      <div class="field full">
+        <label for="auto">Marca y Modelo <span class="req">*</span></label>
+        <input type="text" id="auto" name="auto" placeholder="Ej: Toyota Corolla Cross SEG HEV 1.8 eCVT" />
+        <span class="error-msg" id="err-auto">Ingresá la marca y modelo</span>
+      </div>
+
+      <div class="field">
+        <label for="anio">Año <span class="req">*</span></label>
+        <select id="anio" name="anio">
+          <option value="">Seleccioná el año</option>
+        </select>
+        <span class="error-msg" id="err-anio">Seleccioná el año</span>
+      </div>
+
+      <div class="field">
+        <label for="cobertura">Cobertura actual <span class="req">*</span></label>
+        <select id="cobertura" name="cobertura">
+          <option value="">Seleccioná una opción</option>
+          <option>Responsabilidad Civil (básica)</option>
+          <option>Terceros completo</option>
+          <option>Todo riesgo</option>
+          <option>No tengo seguro actualmente</option>
+        </select>
+        <span class="error-msg" id="err-cobertura">Seleccioná tu cobertura</span>
+      </div>
+
+      <div class="field">
+        <label for="costo">Costo mensual actual <span class="opt">(opcional)</span></label>
+        <input type="text" id="costo" name="costo" placeholder="Ej: $45.000" inputmode="numeric" />
+      </div>
+
+      <div class="field">
+        <label for="franquicia">Franquicia <span class="opt">(opcional)</span></label>
+        <input type="text" id="franquicia" name="franquicia" placeholder="Ej: 1%, 2%, 5%..." />
+      </div>
+
+      <div class="field">
+        <label for="aseguradora">Aseguradora actual <span class="opt">(opcional)</span></label>
+        <input type="text" id="aseguradora" name="aseguradora" placeholder="Ej: Sancor, Zurich..." />
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <button type="submit" class="submit-btn" id="submit-btn">
+        Solicitar mi cotización →
+      </button>
+      <p class="privacy">🔒 Tus datos son confidenciales y se usan exclusivamente para preparar tu cotización. No los compartimos con terceros.</p>
+    </div>
+
+  </form>
+
+  <!-- SUCCESS -->
+  <div id="success">
+    <div class="success-icon">✓</div>
+    <h2 class="success-title">¡Solicitud recibida!</h2>
+    <p class="success-desc">Te contactamos en las próximas 24 horas hábiles con tu cotización personalizada con descuento especial por convenio.</p>
+    <div class="success-data" id="success-data"></div>
+    <p style="font-size:13px;color:#556070;">¿Tenés alguna consulta antes? Escribinos directamente:</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <a id="wsp-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#25D366;color:white;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;">
+        💬 WhatsApp
+      </a>
+      <a href="mailto:info@achegroup.com.ar" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#1a2e4a;color:#c9a84c;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;">
+        ✉️ Email
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><strong>V&B Insurance Broker</strong> — Productores Asesores de Seguros</p>
+  <p style="margin-top:6px;">info@achegroup.com.ar &nbsp;|&nbsp; 15 5 318-7750 &nbsp;|&nbsp; www.achegroup.com.ar</p>
+</footer>
+
+<script>
+// --- Poblar selector de años ---
+var sel = document.getElementById('anio');
+var yr = new Date().getFullYear();
+for (var y = yr; y >= 1990; y--) {
+  var o = document.createElement('option');
+  o.value = y; o.textContent = y;
+  sel.appendChild(o);
+}
+
+// --- Config (número de WhatsApp) ---
+var WA_NUMBER = ''; // se setea dinámicamente o hardcodeado
+var CONFIG_EMAIL = '';
+
+function saveConfig() {
+  var email = document.getElementById('config-email').value.trim();
+  if (email) {
+    CONFIG_EMAIL = email;
+    localStorage.setItem('vb_email', email);
+    alert('✓ Email guardado: ' + email);
+  }
+}
+// Leer config guardada
+try {
+  var saved = localStorage.getItem('vb_email');
+  if (saved) { document.getElementById('config-email').value = saved; CONFIG_EMAIL = saved; }
+} catch(e) {}
+
+// --- Validación ---
+function validate() {
+  var ok = true;
+  var campos = [
+    { id: 'nombre', check: function(v){ return v.trim().split(' ').length >= 2; }, err: 'Ingresá nombre y apellido' },
+    { id: 'nacimiento', check: function(v){ return v.length > 0; }, err: 'Ingresá tu fecha de nacimiento' },
+    { id: 'dni', check: function(v){ return /^\d{7,8}$/.test(v.trim().replace(/\./g,'')); }, err: 'Ingresá un DNI válido (7 u 8 dígitos)' },
+    { id: 'direccion', check: function(v){ return v.trim().length > 5; }, err: 'Ingresá tu dirección completa' },
+    { id: 'telefono', check: function(v){ return v.trim().length >= 8; }, err: 'Ingresá tu teléfono' },
+    { id: 'auto', check: function(v){ return v.trim().length > 2; }, err: 'Ingresá la marca y modelo' },
+    { id: 'anio', check: function(v){ return v !== ''; }, err: 'Seleccioná el año' },
+    { id: 'cobertura', check: function(v){ return v !== ''; }, err: 'Seleccioná tu cobertura actual' },
+  ];
+  campos.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    var err = document.getElementById('err-' + c.id);
+    var valid = c.check(el.value);
+    if (!valid) {
+      el.classList.add('error');
+      if (err) { err.textContent = c.err; err.classList.add('show'); }
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      if (err) err.classList.remove('show');
+    }
+  });
+  return ok;
+}
+
+// Limpiar error al escribir
+['nombre','nacimiento','dni','direccion','telefono','auto','anio','cobertura'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() {
+    el.classList.remove('error');
+    var err = document.getElementById('err-' + id);
+    if (err) err.classList.remove('show');
+  });
+});
+
+// --- Submit ---
+document.getElementById('cotizacion-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!validate()) {
+    document.querySelector('.error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  var datos = {
+    nombre: document.getElementById('nombre').value.trim(),
+    nacimiento: document.getElementById('nacimiento').value,
+    dni: document.getElementById('dni').value.trim(),
+    direccion: document.getElementById('direccion').value.trim(),
+    telefono: document.getElementById('telefono').value.trim(),
+    auto: document.getElementById('auto').value.trim(),
+    anio: document.getElementById('anio').value,
+    cobertura: document.getElementById('cobertura').value,
+    franquicia: document.getElementById('franquicia').value.trim() || 'No informado',
+    costo: document.getElementById('costo').value.trim() || 'No informado',
+    aseguradora: document.getElementById('aseguradora').value.trim() || 'No informado',
+  };
+
+  // Intentar envío por EmailJS si está configurado
+  enviarFormulario(datos);
+});
+
+function enviarFormulario(datos) {
+  // Construir resumen para WhatsApp (fallback siempre disponible)
+  var resumen = '🛡️ *Nueva cotización — V%26B Insurance Broker*\n\n'
+    + '👤 *Nombre:* ' + datos.nombre + '\n'
+    + '📅 *Nacimiento:* ' + datos.nacimiento + '\n'
+    + '🪪 *DNI:* ' + datos.dni + '\n'
+    + '📍 *Dirección:* ' + datos.direccion + '\n'
+    + '📞 *Teléfono:* ' + datos.telefono + '\n\n'
+    + '🚗 *Auto:* ' + datos.auto + ' (' + datos.anio + ')\n'
+    + '🛡️ *Cobertura actual:* ' + datos.cobertura + '\n'
+    + '🔧 *Franquicia:* ' + datos.franquicia + '\n'
+    + '💰 *Costo actual:* ' + datos.costo + '\n'
+    + '🏢 *Aseguradora:* ' + datos.aseguradora;
+
+  // Intentar EmailJS
+  if (typeof emailjs !== 'undefined' && window.VB_SERVICE_ID) {
+    emailjs.send(window.VB_SERVICE_ID, window.VB_TEMPLATE_ID, {
+      to_email: CONFIG_EMAIL || 'info@achegroup.com.ar',
+      nombre: datos.nombre,
+      nacimiento: datos.nacimiento,
+      dni: datos.dni,
+      direccion: datos.direccion,
+      telefono: datos.telefono,
+      auto: datos.auto + ' ' + datos.anio,
+      cobertura: datos.cobertura,
+      costo: datos.costo,
+      aseguradora: datos.aseguradora,
+    }).then(function() { mostrarExito(datos, resumen); })
+      .catch(function() { mostrarExito(datos, resumen); });
+  } else {
+    // Sin EmailJS: mostrar éxito igual y proveer link de WhatsApp con datos
+    mostrarExito(datos, resumen);
+  }
+}
+
+function mostrarExito(datos, resumen) {
+  document.getElementById('cotizacion-form').style.display = 'none';
+  var s = document.getElementById('success');
+  s.style.display = 'block';
+
+  // Resumen visible para el prospecto
+  var html = '<div class="success-data-title">Resumen de tu solicitud</div>';
+  var campos = [
+    ['Nombre', datos.nombre],
+    ['Fecha de nacimiento', datos.nacimiento],
+    ['DNI', datos.dni],
+    ['Auto', datos.auto + ' — ' + datos.anio],
+    ['Cobertura actual', datos.cobertura],
+    ['Franquicia', datos.franquicia],
+    ['Costo actual', datos.costo],
+    ['Aseguradora', datos.aseguradora],
+  ];
+  campos.forEach(function(c) {
+    html += '<div class="data-row"><span class="data-label">' + c[0] + '</span><span class="data-val">' + c[1] + '</span></div>';
+  });
+  document.getElementById('success-data').innerHTML = html;
+
+  // Link WhatsApp con datos precargados
+  var waNum = (window.VB_WA_NUMBER || '').replace(/\D/g,'');
+  if (waNum) {
+    document.getElementById('wsp-link').href = 'https://wa.me/549' + waNum + '?text=' + encodeURIComponent(resumen.replace(/%26/g,'&'));
+  } else {
+    document.getElementById('wsp-link').style.display = 'none';
+  }
+
+  s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Ocultar panel de config si ya está configurado
+try {
+  if (localStorage.getItem('vb_configured') === '1') {
+    document.getElementById('config-panel').style.display = 'none';
+  }
+} catch(e) {}
+</script>
+
+<!-- 
+=================================================
+INSTRUCCIONES PARA RECIBIR LOS DATOS POR MAIL
+=================================================
+
+OPCIÓN A — Formspree (más simple, recomendada):
+1. Crear cuenta en https://formspree.io
+2. Crear un nuevo "Form" y copiar el endpoint (ej: https://formspree.io/f/xxxxxabc)
+3. Reemplazar la línea del form:
+   <form id="cotizacion-form" novalidate>
+   por:
+   <form id="cotizacion-form" action="https://formspree.io/f/TU_ID" method="POST" novalidate>
+4. En el JS, cambiar la función enviarFormulario para usar fetch con FormData
+
+OPCIÓN B — EmailJS (más control):
+1. Crear cuenta en https://emailjs.com
+2. Conectar tu Gmail como "Email Service"
+3. Crear un template con las variables: {{nombre}}, {{dni}}, etc.
+4. Agregar antes del </body>:
+   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+   <script>
+     emailjs.init("TU_PUBLIC_KEY");
+     window.VB_SERVICE_ID = 'TU_SERVICE_ID';
+     window.VB_TEMPLATE_ID = 'TU_TEMPLATE_ID';
+     window.VB_WA_NUMBER = '1123456789'; // tu número sin 0 ni 15
+   </script>
+
+OPCIÓN C — Subir a GitHub Pages (gratis, sin servidor):
+1. Crear cuenta en https://github.com
+2. Crear repositorio nuevo → subir este archivo como index.html
+3. Settings → Pages → Branch: main → Save
+4. Tu formulario queda en: https://tu-usuario.github.io/tu-repo
+   Ese link es el que convertís en QR.
+=================================================
+-->
+
+</body>
+</html>
