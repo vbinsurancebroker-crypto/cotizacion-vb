@@ -377,7 +377,7 @@
     </div>
   </details>
 
-  <form id="cotizacion-form" novalidate>
+  <form id="cotizacion-form" action="https://formspree.io/f/xwvjqlpb" method="POST" novalidate>
 
     <div class="section-title">Datos personales</div>
 
@@ -462,6 +462,8 @@
       </div>
     </div>
 
+    <input type="hidden" name="_subject" value="Nueva cotizacion V&B Insurance Broker" />
+    <input type="hidden" name="_next" value="https://vbinsurancebroker-crypto.github.io/cotizacion-vb/gracias.html" />
     <div class="submit-area">
       <button type="submit" class="submit-btn" id="submit-btn">
         Solicitar mi cotización →
@@ -636,7 +638,7 @@ function enviarFormulario(datos) {
   formData.append('Aseguradora', datos.aseguradora);
   formData.append('_subject', 'Nueva cotizacion - ' + datos.nombre + ' | V&B Insurance Broker');
 
-  fetch('https://formspree.io/f/mzdqveen', {
+  fetch('https://formspree.io/f/xwvjqlpb', {
     method: 'POST',
     body: formData,
     headers: { 'Accept': 'application/json' }
@@ -697,7 +699,7 @@ OPCION A - Formspree (mas simple, recomendada):
 1. Crear cuenta en https://formspree.io
 2. Crear un nuevo "Form" y copiar el endpoint (ej: https://formspree.io/f/xxxxxabc)
 3. Reemplazar la linea del form:
-   <form id="cotizacion-form" novalidate>
+   <form id="cotizacion-form" action="https://formspree.io/f/xwvjqlpb" method="POST" novalidate>
    por:
    <form id="cotizacion-form" action="https://formspree.io/f/TU_ID" method="POST" novalidate>
 4. En el JS, cambiar la funcion enviarFormulario para usar fetch con FormData
