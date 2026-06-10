@@ -430,9 +430,7 @@
 
       <div class="field">
         <label for="anio">Año <span class="req">*</span></label>
-        <select id="anio" name="anio">
-          <option value="">Seleccioná el año</option>
-        </select>
+        <input type="number" id="anio" name="anio" placeholder="Ej: 2019" min="1990" max="2026" inputmode="numeric" />
         <span class="error-msg" id="err-anio">Seleccioná el año</span>
       </div>
 
@@ -498,17 +496,19 @@
 </footer>
 
 <script>
-// --- Poblar selector de años ---
-var sel = document.getElementById('anio');
-var yr = new Date().getFullYear();
-for (var y = yr; y >= 1990; y--) {
-  var o = document.createElement('option');
-  o.value = y; o.textContent = y;
-  sel.appendChild(o);
-}
+// --- Poblar selector de anos ---
+document.addEventListener('DOMContentLoaded', function() {
+  var sel = document.getElementById('anio');
+  var yr = new Date().getFullYear();
+  for (var y = yr; y >= 1990; y--) {
+    var o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    sel.appendChild(o);
+  }
+});
 
-// --- Config (número de WhatsApp) ---
-var WA_NUMBER = ''; // se setea dinámicamente o hardcodeado
+// --- Config (numero de WhatsApp) ---
+var WA_NUMBER = ''; // se setea dinamicamente o hardcodeado
 var CONFIG_EMAIL = '';
 
 function saveConfig() {
@@ -525,19 +525,19 @@ try {
   if (saved) { document.getElementById('config-email').value = saved; CONFIG_EMAIL = saved; }
 } catch(e) {}
 
-// --- Validación ---
+// --- Validacion ---
 function validate() {
   var ok = true;
   var campos = [
-    { id: 'nombre', check: function(v){ return v.trim().split(' ').length >= 2; }, err: 'Ingresá nombre y apellido' },
-    { id: 'nacimiento', check: function(v){ return v.length > 0; }, err: 'Ingresá tu fecha de nacimiento' },
-    { id: 'dni', check: function(v){ return /^\d{7,8}$/.test(v.trim().replace(/\./g,'')); }, err: 'Ingresá un DNI válido (7 u 8 dígitos)' },
-    { id: 'direccion', check: function(v){ return v.trim().length > 5; }, err: 'Ingresá tu dirección completa' },
-    { id: 'telefono', check: function(v){ return v.trim().length >= 8; }, err: 'Ingresá tu teléfono' },
-    { id: 'email', check: function(v){ return /^[^@]+@[^@]+.[^@]+$/.test(v.trim()); }, err: 'Ingresá un mail válido' },
-    { id: 'auto', check: function(v){ return v.trim().length > 2; }, err: 'Ingresá la marca y modelo' },
-    { id: 'anio', check: function(v){ return v !== ''; }, err: 'Seleccioná el año' },
-    { id: 'cobertura', check: function(v){ return v !== ''; }, err: 'Seleccioná tu cobertura actual' },
+    { id: 'nombre', check: function(v){ return v.trim().split(' ').length >= 2; }, err: 'Ingresa nombre y apellido' },
+    { id: 'nacimiento', check: function(v){ return v.length > 0; }, err: 'Ingresa tu fecha de nacimiento' },
+    { id: 'dni', check: function(v){ return /^\d{7,8}$/.test(v.trim().replace(/\./g,'')); }, err: 'Ingresa un DNI valido (7 u 8 digitos)' },
+    { id: 'direccion', check: function(v){ return v.trim().length > 5; }, err: 'Ingresa tu direccion completa' },
+    { id: 'telefono', check: function(v){ return v.trim().length >= 8; }, err: 'Ingresa tu telefono' },
+    { id: 'email', check: function(v){ return /^[^@]+@[^@]+.[^@]+$/.test(v.trim()); }, err: 'Ingresa un mail valido' },
+    { id: 'auto', check: function(v){ return v.trim().length > 2; }, err: 'Ingresa la marca y modelo' },
+    { id: 'anio', check: function(v){ return v.trim().length === 4 && !isNaN(v); }, err: 'Ingresa el ano (4 digitos)' },
+    { id: 'cobertura', check: function(v){ return v !== ''; }, err: 'Selecciona tu cobertura actual' },
   ];
   campos.forEach(function(c) {
     var el = document.getElementById(c.id);
@@ -591,12 +591,12 @@ document.getElementById('cotizacion-form').addEventListener('submit', function(e
     aseguradora: document.getElementById('aseguradora').value.trim() || 'No informado',
   };
 
-  // Intentar envío por EmailJS si está configurado
+  // Intentar envio por EmailJS si esta configurado
   enviarFormulario(datos);
 });
 
 function enviarFormulario(datos) {
-  var resumen = '🛡️ *Nueva cotización — V&B Insurance Broker*
+  var resumen = '🛡️ *Nueva cotizacion - V&B Insurance Broker*
 
 '
     + '👤 *Nombre:* ' + datos.nombre + '
@@ -605,9 +605,9 @@ function enviarFormulario(datos) {
 '
     + '🪪 *DNI:* ' + datos.dni + '
 '
-    + '📍 *Dirección:* ' + datos.direccion + '
+    + '📍 *Direccion:* ' + datos.direccion + '
 '
-    + '📞 *Teléfono:* ' + datos.telefono + '
+    + '📞 *Telefono:* ' + datos.telefono + '
 '
     + '📧 *Mail:* ' + datos.email + '
 
@@ -658,7 +658,7 @@ function mostrarExito(datos, resumen) {
     ['Nombre', datos.nombre],
     ['Fecha de nacimiento', datos.nacimiento],
     ['DNI', datos.dni],
-    ['Auto', datos.auto + ' — ' + datos.anio],
+    ['Auto', datos.auto + ' - ' + datos.anio],
     ['Cobertura actual', datos.cobertura],
     ['Franquicia', datos.franquicia],
     ['Costo actual', datos.costo],
@@ -680,7 +680,7 @@ function mostrarExito(datos, resumen) {
   s.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Ocultar panel de config si ya está configurado
+// Ocultar panel de config si ya esta configurado
 try {
   if (localStorage.getItem('vb_configured') === '1') {
     document.getElementById('config-panel').style.display = 'none';
@@ -693,16 +693,16 @@ try {
 INSTRUCCIONES PARA RECIBIR LOS DATOS POR MAIL
 =================================================
 
-OPCIÓN A — Formspree (más simple, recomendada):
+OPCION A - Formspree (mas simple, recomendada):
 1. Crear cuenta en https://formspree.io
 2. Crear un nuevo "Form" y copiar el endpoint (ej: https://formspree.io/f/xxxxxabc)
-3. Reemplazar la línea del form:
+3. Reemplazar la linea del form:
    <form id="cotizacion-form" novalidate>
    por:
    <form id="cotizacion-form" action="https://formspree.io/f/TU_ID" method="POST" novalidate>
-4. En el JS, cambiar la función enviarFormulario para usar fetch con FormData
+4. En el JS, cambiar la funcion enviarFormulario para usar fetch con FormData
 
-OPCIÓN B — EmailJS (más control):
+OPCION B - EmailJS (mas control):
 1. Crear cuenta en https://emailjs.com
 2. Conectar tu Gmail como "Email Service"
 3. Crear un template con las variables: {{nombre}}, {{dni}}, etc.
@@ -712,10 +712,10 @@ OPCIÓN B — EmailJS (más control):
      emailjs.init("TU_PUBLIC_KEY");
      window.VB_SERVICE_ID = 'TU_SERVICE_ID';
      window.VB_TEMPLATE_ID = 'TU_TEMPLATE_ID';
-     window.VB_WA_NUMBER = '1123456789'; // tu número sin 0 ni 15
+     window.VB_WA_NUMBER = '1123456789'; // tu numero sin 0 ni 15
    </script>
 
-OPCIÓN C — Subir a GitHub Pages (gratis, sin servidor):
+OPCION C — Subir a GitHub Pages (gratis, sin servidor):
 1. Crear cuenta en https://github.com
 2. Crear repositorio nuevo → subir este archivo como index.html
 3. Settings → Pages → Branch: main → Save
